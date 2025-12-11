@@ -1,0 +1,40 @@
+﻿@model VehicleBooking.Models.Booking
+
+@{
+    ViewData["Title"] = "Booking Successful";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+        <div class="custom-card text-center p-4 shadow-sm rounded">
+
+            <h2 style="color:#0056B3; font-weight:700;">Booking Successful!</h2>
+            <p class="mt-3">@ViewBag.Message</p>
+
+            <div class="mt-3 text-start">
+                <p>
+                    <strong>Full Name:</strong> @Model.FullName <br />
+                    <strong>Contact Number:</strong> @Model.ContactNumber <br />
+                    <strong>Vehicle Type:</strong> @Model.VehicleType <br />
+                    <strong>Pickup Date:</strong> @Model.PickupDate?.ToString("dd MMM yyyy") <br />
+                    <strong>Return Date:</strong> @Model.ReturnDate?.ToString("dd MMM yyyy") <br />
+                    <strong>Number of Days:</strong> @((Model.ReturnDate.Value - Model.PickupDate.Value).Days + 1) <br />
+                    <strong>Price per Day:</strong> R@Model.PricePerDay <br />
+                    <strong>Total Cost:</strong> <span style="color:green; font-weight:bold;">R@Model.TotalCost</span>
+                </p>
+            </div>
+
+            <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
+                <!-- Add another booking -->
+                <a href="/Booking/Create" class="btn btn-primary px-4 py-2">Add Another Booking</a>
+
+                <!-- View my bookings -->
+                <a href="/Booking/ViewBookings" class="btn btn-secondary px-4 py-2">View My Bookings</a>
+
+                <!-- Return to home -->
+                <a href="/" class="btn btn-outline-primary px-4 py-2">Return to Home</a>
+            </div>
+
+        </div>
+    </div>
+</div>

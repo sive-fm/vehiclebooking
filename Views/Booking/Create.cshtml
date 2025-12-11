@@ -1,0 +1,98 @@
+﻿@model VehicleBooking.Models.Booking
+@{
+    ViewData["Title"] = "Book a Vehicle";
+}
+
+<h2>Book a Vehicle</h2>
+
+<form asp-action="Create" method="post" novalidate>
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="FullName"></label>
+        <input asp-for="FullName" class="form-control" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="VehicleType"></label>
+        <select asp-for="VehicleType" class="form-control" id="vehicleType">
+            <option value="">-- Select --</option>
+            <option>Hatchback</option>
+            <option>Sedan</option>
+            <option>SUV</option>
+            <option>Van</option>
+        </select>
+        <span asp-validation-for="VehicleType" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PickupDate"></label>
+        <input asp-for="PickupDate" class="form-control" type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")" id="pickupDate" />
+        <span asp-validation-for="PickupDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ReturnDate"></label>
+        <input asp-for="ReturnDate" class="form-control" type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")" id="returnDate" />
+        <span asp-validation-for="ReturnDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ContactNumber"></label>
+        <input asp-for="ContactNumber" class="form-control" placeholder="e.g. 0123456789" />
+        <span asp-validation-for="ContactNumber" class="text-danger"></span>
+    </div>
+
+    <!-- Display price and total -->
+    <div class="form-group mt-3">
+        <p><strong>Price per Day:</strong> R<span id="pricePerDay">0</span></p>
+        <p><strong>Total Cost:</strong> <span id="totalCost" style="color:green; font-weight:bold;">0</span></p>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Book Vehicle</button>
+</form>
+
+@section Scripts {
+    @Html.Partial("_ValidationScriptsPartial")  <!-- Fixed line -->
+
+    <script>
+        const priceMap = {
+            "Hatchback": 400,
+            "Sedan": 500,
+            "SUV": 800,
+            "Van": 1200
+        };
+
+        const vehicleType = document.getElementById("vehicleType");
+        const pickupDate = document.getElementById("pickupDate");
+        const returnDate = document.getElementById("returnDate");
+        const pricePerDaySpan = document.getElementById("pricePerDay");
+        const totalCostSpan = document.getElementById("totalCost");
+
+        function calculatePrice() {
+            const type = vehicleType.value;
+            const start = new Date(pickupDate.value);
+            const end = new Date(returnDate.value);
+
+            let price = 0;
+            if (type in priceMap) {
+                price = priceMap[type];
+            }
+
+            let total = 0;
+            if (pickupDate.value && returnDate.value && end >= start) {
+                const timeDiff = end - start;
+                const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) + 1; // include start day
+                total = days * price;
+            }
+
+            pricePerDaySpan.innerText = price;
+            totalCostSpan.innerText = total;
+        }
+
+        vehicleType.addEventListener("change", calculatePrice);
+        pickupDate.addEventListener("change", calculatePrice);
+        returnDate.addEventListener("change", calculatePrice);
+    </script>
+}

@@ -1,0 +1,55 @@
+﻿@model List<VehicleBooking.Models.Booking>
+
+@{
+    ViewData["Title"] = "All Bookings";
+}
+
+<h1 class="mt-4 mb-4" style="color:#0056B3;">All Vehicle Bookings</h1>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-primary">
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Vehicle Type</th>
+            <th>Pickup Date</th>
+            <th>Return Date</th>
+            <th>Number of Days</th>
+            <th>Price per Day</th>
+            <th>Total Cost</th>
+            <th>Contact Number</th>
+            <th>Booking Date</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var booking in Model)
+        {
+            var numberOfDays = (booking.ReturnDate.Value - booking.PickupDate.Value).Days + 1;
+
+            decimal pricePerDay = booking.VehicleType switch
+            {
+                "Hatchback" => 400m,
+                "Sedan" => 500m,
+                "SUV" => 800m,
+                "Van" => 1200m,
+                _ => 500m
+            };
+
+            decimal totalCost = numberOfDays * pricePerDay;
+
+            <tr>
+                <td>@booking.BookingID</td>
+                <td>@booking.FullName</td>
+                <td>@booking.VehicleType</td>
+                <td>@booking.PickupDate?.ToString("yyyy-MM-dd")</td>
+                <td>@booking.ReturnDate?.ToString("yyyy-MM-dd")</td>
+                <td>@numberOfDays</td>
+                <td>@($"R{pricePerDay}")</td>
+                <td style="color:green; font-weight:bold;">@($"R{totalCost}")</td>
+                <td>@booking.ContactNumber</td>
+                <td>@booking.BookingDate.ToString("yyyy-MM-dd HH:mm")</td>
+            </tr>
+        }
+    </tbody>
+</table>
